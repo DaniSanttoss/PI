@@ -1,0 +1,354 @@
+import sqlite3
+import sqlite3
+
+# Comando para conectar ao import sqlite3
+
+# Comando para conectar ao banco de dados SQLite
+conexao_bd = sqlite3.connect('sgdn.db')
+cursor_bd = conexao_bd.cursor()
+
+# Criando a tabela de dispositivos
+cursor_bd.execute('''
+    CREATE TABLE IF NOT EXISTS dispositivos (
+        id INTEGER PRIMARY KEY,
+        nome TEXT,
+        mac_address TEXT,
+        status_da_rede TEXT,
+        localizacao TEXT,
+        contato_responsavel TEXT
+    )
+''')
+conexao_bd.commit()
+
+# Função para adicionar um dispositivo ao banco de dados
+def adicionar_dispositivo():
+    nome_dispositivo = input("Nome do dispositivo: ")
+    mac_address_dispositivo = input("Mac Address: ")
+    status_da_rede = input("Status da Rede: ")
+    localizacao_dispositivo = input("Localização física: ")
+    contato_responsavel_dispositivo = input("Contato do responsável: ")
+
+    cursor_bd.execute('''
+        INSERT INTO dispositivos (nome, mac_address, status_da_rede, localizacao, contato_responsavel)
+        VALUES (?, ?, ?, ?, ?)
+    ''', (nome_dispositivo, mac_address_dispositivo, status_da_rede, localizacao_dispositivo, contato_responsavel_dispositivo))
+    conexao_bd.commit()
+    print("Dispositivo adicionado com sucesso!")
+    
+# Função para listar os dispositivos ao banco de dados
+def listar_dispositivos():
+    cursor_bd.execute('SELECT * FROM dispositivos')
+    dispositivos = cursor_bd.fetchall()
+    for dispositivo in dispositivos:
+        print(f"ID: {dispositivo[0]}, Nome: {dispositivo[1]}, Mac Address : {dispositivo[2]}, Status da Rede : {dispositivo[3]}, Localização : {dispositivo[4]}, Contato Responsável : {dispositivo[5]}")
+
+def alterar_dispositivo():
+    listar_dispositivos()
+    id_dispositivo = int(input("Digite o ID do dispositivo que deseja alterar: "))
+    
+    # Verificar se o dispositivo com o ID fornecido existe
+    cursor_bd.execute("SELECT * FROM dispositivos WHERE id=?", (id_dispositivo,))
+    dispositivo = cursor_bd.fetchone()
+
+    if dispositivo:
+        print(f"Detalhes do Dispositivo:")
+        print(f"Nome: {dispositivo[1]}")
+        print(f"Mac Address: {dispositivo[2]}")
+        print(f"Status da Rede: {dispositivo[3]}")
+        print(f"Localização: {dispositivo[4]}")
+        print(f"Contato Responsável: {dispositivo[5]}")
+
+        # Solicitar ao usuário as novas informações
+        novo_nome = input("Novo Nome (pressione Enter para manter o atual): ")
+        novo_mac_address = input("Novo Mac Address (pressione Enter para manter o atual): ")
+        novo_status_da_rede = input("Novo Status da Rede (pressione Enter para manter o atual): ")
+        nova_localizacao = input("Nova Localização (pressione Enter para manter o atual): ")
+        novo_contato_responsavel = input("Novo Contato Responsável (pressione Enter para manter o atual): ")
+
+        # Atualiza as informações do dispositivo no banco de dados
+        cursor_bd.execute('''
+            UPDATE dispositivos
+            SET nome=?, mac_address=?, status_da_rede=?, localizacao=?, contato_responsavel=?
+            WHERE id=?
+        ''', (novo_nome or dispositivo[1], novo_mac_address or dispositivo[2],
+              novo_status_da_rede or dispositivo[3], nova_localizacao or dispositivo[4],
+              novo_contato_responsavel or dispositivo[5], id_dispositivo))
+
+        conexao_bd.commit()
+        print("Dispositivo alterado com sucesso!")
+    else:
+        print("Dispositivo não encontrado.")
+# Implementado a lógica para alterar os campos do dispositivo com o ID fornecido
+
+def deletar_dispositivo():
+    listar_dispositivos()
+    id_dispositivo = int(input("Digite o ID do dispositivo que deseja deletar: "))
+    
+    cursor_bd.execute("DELETE FROM dispositivos WHERE id=?", (id_dispositivo,))
+    conexao_bd.commit()
+    print("Dispositivo deletado com sucesso!")
+## Função principal do Menu principal da CLI
+while True:
+    print("Sistema de Gerenciamento de Dispositivos de Rede (SGDN)")
+    print("1. Adicionar Dispositivo")
+    print("2. Listar Dispositivos")
+    print("3. Alterar Dispositivo")
+    print("4. Deletar Dispositivo")
+    print("5. Sair")
+    
+    escolha = input("Escolha uma opção: ")
+
+    if escolha == '1':
+        adicionar_dispositivo()
+    elif escolha == '2':
+        listar_dispositivos()
+    elif escolha == '3':
+        alterar_dispositivo()
+    elif escolha == '4':
+        deletar_dispositivo()
+    elif escolha == '5':
+        break
+    else:
+        print("Opção inválida. Tente novamente.")
+
+conexao_bd.close()
+
+conexao_bd = sqlite3.connect('sgdn.db')
+cursor_bd = conexao_bd.cursor()
+
+# Criando a tabela de dispositivos
+cursor_bd.execute('''
+    CREATE TABLE IF NOT EXISTS dispositivos (
+        id INTEGER PRIMARY KEY,
+        nome TEXT,
+        mac_address TEXT,
+        status_da_rede TEXT,
+        localizacao TEXT,
+        contato_responsavel TEXT
+    )
+''')
+conexao_bd.commit()
+
+# Função para adicionar um dispositivo ao banco de dados
+def adicionar_dispositivo():
+    nome_dispositivo = input("Nome do dispositivo: ")
+    mac_address_dispositivo = input("Mac Address: ")
+    status_da_rede = input("Status da Rede: ")
+    localizacao_dispositivo = input("Localização física: ")
+    contato_responsavel_dispositivo = input("Contato do responsável: ")
+
+    cursor_bd.execute('''
+        INSERT INTO dispositivos (nome, mac_address, status_da_rede, localizacao, contato_responsavel)
+        VALUES (?, ?, ?, ?, ?)
+    ''', (nome_dispositivo, mac_address_dispositivo, status_da_rede, localizacao_dispositivo, contato_responsavel_dispositivo))
+    conexao_bd.commit()
+    print("Dispositivo adicionado com sucesso!")
+    
+# Função para listar os dispositivos ao banco de dados
+def listar_dispositivos():
+    cursor_bd.execute('SELECT * FROM dispositivos')
+    dispositivos = cursor_bd.fetchall()
+    for dispositivo in dispositivos:
+        print(f"ID: {dispositivo[0]}, Nome: {dispositivo[1]}, Mac Address: {dispositivo[2]}, Status da Rede : {dispositivo[3]}, Localização : {dispositivo[4]}, Contato Responsável : {dispositivo[5]}")
+
+def alterar_dispositivo():
+    listar_dispositivos()
+    id_dispositivo = int(input("Digite o ID do dispositivo que deseja alterar: "))
+    
+# Verificar se o dispositivo com o ID fornecido existe
+    cursor_bd.execute("SELECT * FROM dispositivos WHERE id=?", (id_dispositivo,))
+    dispositivo = cursor_bd.fetchone()
+
+    if dispositivo:
+        print(f"Detalhes do Dispositivo:")
+        print(f"Nome: {dispositivo[1]}")
+        print(f"Mac Address: {dispositivo[2]}")
+        print(f"Status da Rede: {dispositivo[3]}")
+        print(f"Localização: {dispositivo[4]}")
+        print(f"Contato Responsável: {dispositivo[5]}")
+
+# Solicitar  ao usuário as novas informações
+        novo_nome = input("Novo Nome (pressione Enter para manter o atual): ")
+        novo_mac_address = input("Novo Mac Address(pressione Enter para manter o atual): ")
+        novo_status_da_rede = input("Novo Status da Rede (pressione Enter para manter o atual): ")
+        nova_localizacao = input("Nova Localização (pressione Enter para manter o atual): ")
+        novo_contato_responsavel = input("Novo Contato Responsável (pressione Enter para manter o atual): ")
+
+# Atualiza as informações do dispositivo no banco de dados
+        if novo_nome:
+            dispositivo[1] = novo_nome
+        if novo_mac_address:
+            dispositivo[2] =novo_mac_address
+        if novo_status_da_rede:
+            dispositivo[3] = novo_status_da_rede
+        if nova_localizacao:
+            dispositivo[4] = nova_localizacao
+        if novo_contato_responsavel:
+            dispositivo[5] = novo_contato_responsavel
+
+        cursor_bd.execute('''
+            UPDATE dispositivos
+            SET nome=?, mac_address=?, status_da_rede=?, localizacao=?, contato_responsavel=?
+            WHERE id=?
+        ''', (dispositivo[1], dispositivo[2], dispositivo[3], dispositivo[4], dispositivo[5], id_dispositivo))
+        
+        conexao_bd.commit()
+        print("Dispositivo alterado com sucesso!")
+    else:
+        print("Dispositivo não encontrado.")
+        
+# Implementado a lógica para alterar os campos do dispositivo com o ID fornecido
+
+def deletar_dispositivo():
+    listar_dispositivos()
+    id_dispositivo = int(input("Digite o ID do dispositivo que deseja deletar: "))
+    
+    cursor_bd.execute("DELETE FROM dispositivos WHERE id=?", (id_dispositivo))
+    conexao_bd.commit()
+    print("Dispositivo deletado com sucesso!")
+
+## Função principal do Menu principal da CLI
+while True:
+    print("Sistema de Gerenciamento de Dispositivos de Rede (SGDN)")
+    print("1. Adicionar Dispositivo")
+    print("2. Listar Dispositivos")
+    print("3. Alterar Dispositivo")
+    print("4. Deletar Dispositivo")
+    print("5. Sair")
+    
+    escolha = input("Escolha uma opção: ")
+
+    if escolha == '1':
+        adicionar_dispositivo()
+    elif escolha == '2':
+        listar_dispositivos()
+    elif escolha == '3':
+        alterar_dispositivo()
+    elif escolha == '4':
+        deletar_dispositivo()
+    elif escolha == '5':
+        break
+    else:
+        print("Opção inválida. Tente novamente.")
+
+conexao_bd.close()
+# Comando para conectar ao banco de dados SQLite
+conexao_bd = sqlite3.connect('sgdn.db')
+cursor_bd = conexao_bd.cursor()
+
+# Criando a tabela de dispositivos
+cursor_bd.execute('''
+    CREATE TABLE IF NOT EXISTS dispositivos (
+        id INTEGER PRIMARY KEY,
+        nome TEXT,
+        mac_address TEXT,
+        status_da_rede TEXT,
+        localizacao TEXT,
+        contato_responsavel TEXT
+    )
+''')
+conexao_bd.commit()
+
+# Função para adicionar um dispositivo ao banco de dados
+def adicionar_dispositivo():
+    nome_dispositivo = input("Nome do dispositivo: ")
+    mac_address_dispositivo = input("Mac Address: ")
+    status_da_rede = input("Status da Rede: ")
+    localizacao_dispositivo = input("Localização física: ")
+    contato_responsavel_dispositivo = input("Contato do responsável: ")
+
+    cursor_bd.execute('''
+        INSERT INTO dispositivos (nome, mac_address, status_da_rede, localizacao, contato_responsavel)
+        VALUES (?, ?, ?, ?, ?)
+    ''', (nome_dispositivo, mac_address_dispositivo, status_da_rede, localizacao_dispositivo, contato_responsavel_dispositivo))
+    conexao_bd.commit()
+    print("Dispositivo adicionado com sucesso!")
+    
+# Função para listar os dispositivos ao banco de dados
+def listar_dispositivos():
+    cursor_bd.execute('SELECT * FROM dispositivos')
+    dispositivos = cursor_bd.fetchall()
+    for dispositivo in dispositivos:
+        print(f"ID: {dispositivo[0]}, Nome: {dispositivo[1]}, Mac : {dispositivo[2]}")
+
+def alterar_dispositivo():
+    listar_dispositivos()
+    id_dispositivo = int(input("Digite o ID do dispositivo que deseja alterar: "))
+    
+# Verificar se o dispositivo com o ID fornecido existe
+    cursor_bd.execute("SELECT * FROM dispositivos WHERE id=?", (id_dispositivo,))
+    dispositivo = cursor_bd.fetchone()
+
+    if dispositivo:
+        print(f"Detalhes do Dispositivo:")
+        print(f"Nome: {dispositivo[1]}")
+        print(f"Mac Address: {dispositivo[2]}")
+        print(f"Status da Rede: {dispositivo[3]}")
+        print(f"Localização: {dispositivo[4]}")
+        print(f"Contato Responsável: {dispositivo[5]}")
+
+# Solicitar  ao usuário as novas informações
+        novo_nome = input("Novo Nome (pressione Enter para manter o atual): ")
+        novo_mac_address = input("Novo Mac Address(pressione Enter para manter o atual): ")
+        novo_status_da_rede = input("Novo Status da Rede (pressione Enter para manter o atual): ")
+        nova_localizacao = input("Nova Localização (pressione Enter para manter o atual): ")
+        novo_contato_responsavel = input("Novo Contato Responsável (pressione Enter para manter o atual): ")
+
+# Atualiza as informações do dispositivo no banco de dados
+        if novo_nome:
+            dispositivo[1] = novo_nome
+        if novo_mac_address:
+            dispositivo[2] =novo_mac_address
+        if novo_status_da_rede:
+            dispositivo[3] = novo_status_da_rede
+        if nova_localizacao:
+            dispositivo[4] = nova_localizacao
+        if novo_contato_responsavel:
+            dispositivo[5] = novo_contato_responsavel
+
+        cursor_bd.execute('''
+            UPDATE dispositivos
+            SET nome=?, mac_address=?, status_da_rede=?, localizacao=?, contato_responsavel=?
+            WHERE id=?
+        ''', (dispositivo[1], dispositivo[2], dispositivo[3], dispositivo[4], dispositivo[5], id_dispositivo))
+        
+        conexao_bd.commit()
+        print("Dispositivo alterado com sucesso!")
+    else:
+        print("Dispositivo não encontrado.")
+        
+# Implementado a lógica para alterar os campos do dispositivo com o ID fornecido
+
+def deletar_dispositivo():
+    listar_dispositivos()
+    id_dispositivo = int(input("Digite o ID do dispositivo que deseja deletar: "))
+    
+    cursor_bd.execute("DELETE FROM dispositivos WHERE id=?", (id_dispositivo))
+    conexao_bd.commit()
+    print("Dispositivo deletado com sucesso!")
+
+## Função principal do Menu principal da CLI
+while True:
+    print("Sistema de Gerenciamento de Dispositivos de Rede (SGDN)")
+    print("1. Adicionar Dispositivo")
+    print("2. Listar Dispositivos")
+    print("3. Alterar Dispositivo")
+    print("4. Deletar Dispositivo")
+    print("5. Sair")
+    
+    escolha = input("Escolha uma opção: ")
+
+    if escolha == '1':
+        adicionar_dispositivo()
+    elif escolha == '2':
+        listar_dispositivos()
+    elif escolha == '3':
+        alterar_dispositivo()
+    elif escolha == '4':
+        deletar_dispositivo()
+    elif escolha == '5':
+        break
+    else:
+        print("Opção inválida. Tente novamente.")
+
+conexao_bd.close()
